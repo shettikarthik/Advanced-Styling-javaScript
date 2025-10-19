@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Styling & JavaScript Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Base Layout & Typography */
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f6f9fc; }
+    header { background: #4682B4; color: #fff; text-align: center; padding: 20px 0; }
+    .container { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px; padding: 30px; }
+    section { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #ccc; padding: 20px; min-width: 280px; flex: 1; }
+
+    /* Responsive Design Using Media Queries */
+    @media (max-width: 1024px) {
+      .container { flex-direction: column; gap: 18px; padding: 12px;}
+    }
+    @media (max-width: 600px) {
+      header { font-size: 1.2em; padding: 12px 0; }
+      section { padding: 10px; min-width: 200px;}
+    }
+    @media (max-width: 400px) {
+      .container { padding: 2px; gap: 8px; }
+      section { font-size: 90%; }
+    }
+
+    /* Carousel Styles */
+    .carousel { position: relative; width: 100%; max-width: 340px; margin: auto; }
+    .slide { display: none; width: 100%; border-radius: 8px;}
+    .active { display: block; }
+    .carousel-controls { margin-top: 10px; text-align: center;}
+    .carousel-controls button { padding: 6px 14px; margin: 3px; border: none; border-radius: 6px; background: #4682B4; color: #fff; cursor: pointer;}
+
+    /* Quiz Styles */
+    #quiz label { display: block; margin-bottom: 8px; }
+    #results { margin-top: 10px; font-weight: bold; }
+
+    /* API Data Styles */
+    #api-data { margin-top: 10px; font-style: italic; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Advanced Styling & JavaScript Demo</h1>
+  </header>
+  <div class="container">
+    <!-- Quiz Section -->
+    <section>
+      <h2>JS Quiz</h2>
+      <form id="quiz"></form>
+      <button id="submit">Get Results</button>
+      <div id="results"></div>
+    </section>
+    <!-- Carousel Section -->
+    <section>
+      <h2>Image Carousel</h2>
+      <div class="carousel">
+        <img src="https://picsum.photos/id/1015/340/180" class="slide active" alt="Image 1">
+        <img src="https://picsum.photos/id/1018/340/180" class="slide" alt="Image 2">
+        <img src="https://picsum.photos/id/1025/340/180" class="slide" alt="Image 3">
+        <div class="carousel-controls">
+          <button id="prev">Prev</button>
+          <button id="next">Next</button>
+        </div>
+      </div>
+    </section>
+    <!-- API Fetch Section -->
+    <section>
+      <h2>Random Joke API</h2>
+      <button id="get-joke">Show Joke</button>
+      <div id="api-data">Press to load a random joke.</div>
+    </section>
+  </div>
+  <script>
+    // ------------------
+    // 1. JavaScript Quiz
+    // ------------------
+    const questions = [
+      {
+        question: "Which CSS property is used for responsive layout?",
+        answers: {a: "float", b: "media-query", c: "position"},
+        correct: "b"
+      },
+      {
+        question: "Which tag is used to write JavaScript?",
+        answers: {a: "<js>", b: "<javascript>", c: "<script>"},
+        correct: "c"
+      }
+    ];
+    function renderQuiz() {
+      const quizForm = document.getElementById('quiz');
+      quizForm.innerHTML = questions.map((q, i) => `
+        <div>
+          <p>${q.question}</p>
+          ${Object.entries(q.answers).map(([key, val]) => `
+            <label><input type="radio" name="q${i}" value="${key}" /> ${val}</label>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+    renderQuiz();
+
+    document.getElementById('submit').onclick = function(e) {
+      e.preventDefault();
+      let score = 0;
+      questions.forEach((q, i) => {
+        const selected = document.querySelector(input[name="q${i}"]:checked);
+        if (selected && selected.value === q.correct) score++;
+      });
+      document.getElementById('results').innerText = Score: ${score}/${questions.length};
+    };
+
+    // -------------------------
+    // 2. Image Carousel/Slider
+    // -------------------------
+    let currentIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    function showSlide(idx) {
+      slides.forEach((el, i) => el.classList.toggle('active', i === idx));
+    }
+    document.getElementById('next').onclick = function() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      showSlide(currentIndex);
+    };
+    document.getElementById('prev').onclick = function() {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      showSlide(currentIndex);
+    };
+    // Optional: Auto-slide
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % slides.length;
+      showSlide(currentIndex);
+    }, 3500);
+
+    // --------------
+    // 3. API Fetch
+    // --------------
+    document.getElementById('get-joke').onclick = function() {
+      fetch('https://api.chucknorris.io/jokes/random')
+        .then(response => response.json())
+        .then(data => document.getElementById('api-data').innerText = data.value)
+        .catch(() => document.getElementById('api-data').innerText = "Could not load joke.");
+    };
+  </script>
+</body>
+</html>
